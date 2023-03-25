@@ -31,6 +31,19 @@ let persons = [
     }
 ]
 
+/* const generateId = () => {
+    const maxId = (() => {
+        if (persons.length > 0) {
+            return Math.max(...persons.map(x => x.id))
+        }
+        else {
+            return 0
+        }
+    })()
+
+    return maxId + 1
+} */
+
 
 //Rutas
 app.get('/', (request, response) => {
@@ -88,6 +101,32 @@ app.delete('/api/persons/:id',(request,response)=>{
         response.status(204).send()
     else
         response.status(404).send()
+
+    console.log(persons)
+})
+
+//Agregar nuevos usuarios
+app.post('/api/persons', (request, response) => {
+    //Recuperacion sintaxis y objeto
+    const body = request.body
+    console.log(body)
+
+    //Si body no devuelve nada
+    if(!body.name){
+        return response.status(400).json({
+            error:'content missing'
+        })
+    }
+
+    //Creacion de nuevo objeto
+    const person={
+        id:Math.floor(Math.random() * (1000 - 1) + 1),
+        name:body.name,
+        number:body.number
+    }
+
+    persons=persons.concat(person)
+    response.json(person)
 
     console.log(persons)
 })
