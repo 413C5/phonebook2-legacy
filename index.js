@@ -1,8 +1,17 @@
 //Servidor express
 const { request, response } = require('express')
 const express = require('express')
+const morgan=require('morgan')
 const app = express()
-app.use(express.json())
+app.use(morgan('tiny'))
+
+morgan.token('object',function(request,require){
+    return `${JSON.stringify(request.body)}`
+})
+
+/* app.use(morgan(':method :url :status :res[content-length] - :response-time ms :object')) */
+
+app.use(express.json()) 
 
 let persons = [
     {
@@ -85,7 +94,7 @@ app.get('/api/persons/:id', (request, response) => {
     }
 
 })
-
+ 
 //Eliminación de una id especifica
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
