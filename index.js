@@ -87,17 +87,17 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 //Eliminación de una id especifica
-app.delete('/api/persons/:id',(request,response)=>{
-    const id=Number(request.params.id)
-    let size=persons.length
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    let size = persons.length
 
     //Modificacion del objeto
-    persons=persons.filter(x=>x.id!==id)
+    persons = persons.filter(x => x.id !== id)
     /* console.log(persons)
     console.log(id)
     console.log(size) */
 
-    if(size>persons.length)
+    if (size > persons.length)
         response.status(204).send()
     else
         response.status(404).send()
@@ -109,26 +109,55 @@ app.delete('/api/persons/:id',(request,response)=>{
 app.post('/api/persons', (request, response) => {
     //Recuperacion sintaxis y objeto
     const body = request.body
-    console.log(body)
+    //console.log(body.name)
 
-    //Si body no devuelve nada
-    if(!body.name){
+    const find = persons.find(x => x.name === body.name)
+    //console.log('FILTER:'+filter.name)
+    //console.log(body.name)
+    //console.log(find)
+
+    //Manejo del error
+    //Campos vacios
+    if (body.name === undefined && body.number === undefined) {
         return response.status(400).json({
-            error:'content missing'
+            error: 'name or number is missing'
         })
     }
 
-    //Creacion de nuevo objeto
-    const person={
-        id:Math.floor(Math.random() * (1000 - 1) + 1),
-        name:body.name,
-        number:body.number
+    else if (body.number === undefined) {
+        return response.status(400).json({
+            error: 'number is missing'
+        })
     }
 
-    persons=persons.concat(person)
-    response.json(person)
+    else if (body.name === undefined) {
+        return response.status(400).json({
+            error: 'name is missing'
+        })
+    }
 
-    console.log(persons)
+    else {
+        //Si se llega a encontrar el nombre en el arreglo
+        if(find!==undefined){
+            return response.status(400).json({
+                error:'name must be unique'
+            })
+        }
+
+        //Creacion de nuevo objeto
+        const person = {
+            id: Math.floor(Math.random() * (1000 - 1) + 1),
+            name: body.name,
+            number: body.number
+        }
+
+        persons = persons.concat(person)
+        response.json(person)
+
+        console.log(persons)
+    }
+
+
 })
 
 //Definición de puerto y que escuhe dicho puerto
