@@ -45,7 +45,7 @@ app.get('/api/persons', (request, response) => {
 //Devolución cantidad de notas con fecha
 app.get('/info', (request, response) => {
     let size = (persons.length).toString()
-    console.log(size)
+    /* console.log(size) */
 
     const date = new Date()
     /* const today = date.toDateString()
@@ -63,7 +63,7 @@ app.get('/info', (request, response) => {
 app.get('/api/persons/:id', (request, response) => {
     let id = Number(request.params.id)
     const person = persons.find(x => x.id === id)
-    console.log(person)
+    /* console.log(person) */
 
     if (person !== undefined) {
         response.json(person)
@@ -71,6 +71,25 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).send()
     }
 
+})
+
+//Eliminación de una id especifica
+app.delete('/api/persons/:id',(request,response)=>{
+    const id=Number(request.params.id)
+    let size=persons.length
+
+    //Modificacion del objeto
+    persons=persons.filter(x=>x.id!==id)
+    /* console.log(persons)
+    console.log(id)
+    console.log(size) */
+
+    if(size>persons.length)
+        response.status(204).send()
+    else
+        response.status(404).send()
+
+    console.log(persons)
 })
 
 //Definición de puerto y que escuhe dicho puerto
